@@ -1,5 +1,6 @@
 // ==========================================
 // CONFIGURAÇÕES DO GOOGLE CALENDAR API
+// (A leitura de agenda não cobra faturamento na camada gratuita)
 // ==========================================
 const k1 = 'AIzaSyDk';
 const k2 = 'cwwIzO3ND6GwU';
@@ -13,7 +14,6 @@ let tokenClient;
 let gapiInited = false;
 let gisInited = false;
 
-// Chamado pelo script da API do Google no index.html
 function gapiLoaded() {
   gapi.load('client', initializeGapiClient);
 }
@@ -23,7 +23,6 @@ async function initializeGapiClient() {
   gapiInited = true;
 }
 
-// Chamado pelo script do Google Identity Services no index.html
 function gisLoaded() {
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
@@ -92,6 +91,79 @@ async function buscarProximoEvento() {
 }
 
 // ==========================================
+// ASTROLÁBIO OPEN-SOURCE (Nominatim + Haversine)
+// ==========================================
+async function calcularTrajetoOpenSource() {
+  const destino = document.getElementById('destino').value;
+  
+  if (!destino) {
+    alert("Informe um destino para o astrolábio cartografar.");
+    return;
+  }
+
+  if (!navigator.geolocation) {
+    alert("Seu equipamento não suporta geolocalização.");
+    return;
+  }
+
+  document.getElementById('trajeto').value = "..."; 
+
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const latOrigem = position.coords.latitude;
+    const lonOrigem = position.coords.longitude;
+
+    try {
+      // 1. Busca coordenadas no OpenStreetMap (Sem chave, sem custo)
+      // O sufixo "São Paulo, SP" garante a precisão da geocodificação
+      const busca = encodeURIComponent(`${destino}, São Paulo, SP`);
+      const respostaOSM = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${busca}&limit=1`);
+      const dadosOSM = await respostaOSM.json();
+
+      if (dadosOSM.length === 0) {
+        alert("O cartógrafo não encontrou esse destino. Seja mais específico (ex: nome da rua).");
+        document.getElementById('trajeto').value = "30";
+        return;
+      }
+
+      const latDestino = parseFloat(dadosOSM[0].lat);
+      const lonDestino = parseFloat(dadosOSM[0].lon);
+
+      // 2. Cálculo de distância geométrica (Haversine)
+      const R = 6371; // Raio da Terra em km
+      const dLat = (latDestino - latOrigem) * Math.PI / 180;
+      const dLon = (lonDestino - lonOrigem) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(latOrigem * Math.PI / 180) * Math.cos(latDestino * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+      const distanciaKm = R * c;
+
+      // 3. Extrapolação Multimodal (Metrô/Ônibus/Trem)
+      // Multiplicador 1.4 converte linha reta em caminhos viários (grid)
+      // 15 km/h é a velocidade média real do transporte público ponta a ponta
+      const distanciaReal = distanciaKm * 1.4;
+      const tempoHoras = distanciaReal / 15;
+      let tempoMinutos = Math.ceil(tempoHoras * 60);
+
+      // Define um tempo mínimo lógico (ninguém se teletransporta)
+      tempoMinutos = Math.max(15, tempoMinutos);
+
+      document.getElementById('trajeto').value = tempoMinutos;
+      alert(`Cartografia finalizada: ~${tempoMinutos} minutos estimados via transporte público.`);
+
+    } catch (erro) {
+      console.error("Erro no astrolábio:", erro);
+      alert("Falha de rede ao consultar o OpenStreetMap.");
+      document.getElementById('trajeto').value = "30";
+    }
+    
+  }, (error) => {
+    alert("O acesso à bússola (GPS) foi bloqueado. Verifique as permissões do navegador.");
+    document.getElementById('trajeto').value = "30";
+  });
+}
+
+// ==========================================
 // LÓGICA DO DESATRASADOR (ALARMES E ÁUDIO)
 // ==========================================
 const sons = {
@@ -120,9 +192,7 @@ function armarDispositivo() {
   let dataAlvo = new Date();
   dataAlvo.setHours(h, m, 0, 0);
 
-  // 20% de margem de segurança
   const totalTrajeto = tempo * 1.2; 
-  // 1 hora sozinho, 2 horas acompanhado
   const preparo = anna ? 120 : 60; 
 
   const horaSaida = new Date(dataAlvo.getTime() - totalTrajeto * 60000);
@@ -138,7 +208,6 @@ function armarDispositivo() {
   document.getElementById("st-arrumar").innerText = `Mecanismo de preparo às: ${horaArrumar.toLocaleTimeString('pt-BR', { hour: "2-digit", minute: "2-digit" })}`;
   document.getElementById("st-sair").innerText = `Partida inevitável às: ${horaSaida.toLocaleTimeString('pt-BR', { hour: "2-digit", minute: "2-digit" })}`;
 
-  // Necessário para destravar reprodução automática de áudio no navegador
   Howler.ctx.resume();
   
   if (monitor) clearInterval(monitor);
