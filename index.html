@@ -18,7 +18,7 @@
     <script src="app.js" defer></script>
   </head>
   <body>
-    <div id="app-container">
+    <div id="app-container" data-engrenagem="cwwIzO3ND6GwU">
       <h1>Desatrasador</h1>
       <div class="tagline">
         Artefato de Precisão Temporal <br />
@@ -33,22 +33,33 @@
           onmouseover="this.style.background='rgba(139, 90, 43, 0.2)'"
           onmouseout="this.style.background='transparent'"
         >
-          [ Sincronizar Pergaminho ] <br> <small style="font-size: 0.7rem; color: var(--copper);">Buscar Google Agenda</small>
+          [ Sincronizar Pergaminho ] <br> 
+          <small style="font-size: 0.7rem; color: var(--copper);">Acessar Agenda Digital</small>
         </button>
       </div>
 
       <div class="input-group">
         <label>DESTINO</label>
         <input type="text" id="destino" placeholder="Ex: CCSP Vergueiro" value="Centro Cultural Vergueiro" />
+        
+        <button 
+          type="button" 
+          onclick="calcularTrajetoOpenSource()" 
+          style="width: 100%; margin-top: 8px; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--bronze); color: var(--copper); font-family: 'Special Elite', monospace; cursor: pointer; transition: 0.2s;"
+          onmouseover="this.style.color='var(--gold)'; this.style.borderColor='var(--gold)';"
+          onmouseout="this.style.color='var(--copper)'; this.style.borderColor='var(--bronze)';"
+        >
+          [ 🧭 Triangular Rota via GPS ]
+        </button>
       </div>
 
       <div class="input-group">
-        <label>HORA DO COMPROMISSO</label>
+        <label>HORÁRIO DO COMPROMISSO</label>
         <input type="time" id="hora-comp" value="10:00" />
       </div>
 
       <div class="input-group">
-        <label>TRAJETO ESTIMADO (MIN)</label>
+        <label>TRAJETO ESTIMADO (MINUTOS)</label>
         <input type="number" id="trajeto" value="30" />
       </div>
 
