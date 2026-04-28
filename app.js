@@ -1,9 +1,9 @@
 // ==========================================
 // CONFIGURAÇÕES DO GOOGLE CALENDAR API
 // ==========================================
-const k1 = 'AIzaSy';
-const k2 = 'BxxXxxXx';
-const k3 = 'xxXxXx-123456789';
+const k1 = 'AIzaSyDk';
+const k2 = 'cwwIzO3ND6GwU';
+const k3 = 'CcOvwHaiMmvMeer3D4';
 const API_KEY = k1 + k2 + k3;
 const CLIENT_ID = '600915881459-vjgnu8hsnmt105of3j7d8co9qdggvmv2.apps.googleusercontent.com';
 const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
