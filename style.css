@@ -1,0 +1,239 @@
+/* Importação das fontes vitorianas e de máquina de escrever */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Special+Elite&display=swap');
+
+:root {
+  /* Paleta de Cores Steampunk */
+  --bronze: #8b5a2b;
+  --gold: #d4af37;
+  --copper: #b87333;
+  --parchment: #f4e1d0;
+  --dark-wood: #2c1e14;
+  --iron: #333333;
+  
+  /* Cores das Lâmpadas de Alarme */
+  --ruby: #a01010;
+  --emerald: #065535;
+  --amber: #ffbf00;
+}
+
+body {
+  font-family: 'Special Elite', system-ui, serif;
+  background-color: var(--dark-wood);
+  background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
+  color: var(--parchment);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Painel Principal do Artefato */
+#app-container {
+  background: radial-gradient(circle, #3d2b1f 0%, #2c1e14 100%);
+  padding: 40px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 420px;
+  border: 8px double var(--bronze);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0,0,0,0.5);
+  text-align: center;
+  position: relative;
+}
+
+/* Rebites decorativos de bronze */
+#app-container::before, 
+#app-container::after {
+  content: "•";
+  position: absolute;
+  color: var(--bronze);
+  font-size: 24px;
+  text-shadow: 1px 1px 1px black;
+}
+#app-container::before { top: 10px; left: 10px; }
+#app-container::after { bottom: 10px; right: 10px; }
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  color: var(--gold);
+  font-size: 2.2rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 2px solid var(--bronze);
+  padding-bottom: 10px;
+}
+
+.tagline {
+  font-size: 0.85rem;
+  color: var(--copper);
+  margin: 15px 0 30px 0;
+  font-style: italic;
+}
+
+/* Campos de Formulário */
+.input-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--gold);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+input[type="text"],
+input[type="time"],
+input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  background: var(--parchment);
+  border: 3px inset var(--bronze);
+  color: var(--iron);
+  border-radius: 4px;
+  font-family: 'Special Elite', monospace;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.toggle-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 25px 0;
+  padding: 15px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 5px;
+  border: 1px solid var(--bronze);
+}
+
+/* Botão de Ativação / Alavanca */
+button.main-btn {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(180deg, var(--gold) 0%, var(--bronze) 100%);
+  color: var(--dark-wood);
+  border: 2px solid var(--iron);
+  border-radius: 4px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow: 0 4px 0 #5d3a1a;
+  transition: all 0.1s;
+}
+
+button.main-btn:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+/* Painel de Status (Monitoramento) */
+#status-board {
+  display: none;
+  margin-top: 30px;
+  border-top: 2px solid var(--bronze);
+  padding-top: 20px;
+  color: var(--copper);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* =========================================
+   ALARM OVERLAY - O Grito da Máquina a Vapor
+   ========================================= */
+
+#alarm-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, var(--dark-wood) 0%, black 100%);
+  z-index: 1000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  border: 20px solid var(--iron);
+}
+
+.cta-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+#alarm-clock {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  font-family: 'Special Elite', monospace;
+  color: var(--parchment);
+  border: 2px solid var(--iron);
+  padding: 10px 20px;
+  background: rgba(0,0,0,0.5);
+}
+
+.context-box {
+  border-top: 2px dashed var(--bronze);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+#alarm-info-dest {
+  font-size: 1.5rem;
+  color: var(--parchment);
+  text-align: center;
+}
+
+.dismiss-btn {
+  margin-top: 50px;
+  background: var(--parchment);
+  color: var(--iron);
+  padding: 20px 60px;
+  border: 4px outset var(--bronze);
+  font-family: 'Special Elite', serif;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background 0.2s;
+}
+
+.dismiss-btn:hover {
+  background: #ffffff;
+}
+
+/* Efeitos Luminosos (Lâmpadas de Vidro) */
+.lamp-green {
+  color: #00ff88;
+  text-shadow: 0 0 20px var(--emerald), 0 0 40px var(--emerald);
+}
+
+.lamp-yellow {
+  color: #ffcc00;
+  text-shadow: 0 0 20px #8b6d00, 0 0 40px #8b6d00;
+}
+
+.lamp-red {
+  color: #ff3300;
+  text-shadow: 0 0 20px var(--ruby), 0 0 40px var(--ruby);
+  animation: flicker 0.15s infinite;
+}
+
+/* Simulação de pressão de vapor instável/luz tremeluzente */
+@keyframes flicker {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.9; }
+}
